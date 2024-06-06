@@ -9,15 +9,14 @@ class DeleteDoneAll extends React.Component {
     }
 
     deleteEventHandler = () => {
-        console.log("지운다. 완료한 일.");
         this.delete();
     }
 
     render() {
         return (
-            <div>달성지우개
+            <div>완료한 일 지우기
                 <IconButton
-                    aria-label="달성한 일을 지우세요!"
+                    aria-label="완료한 일 지우기"
                     onClick={this.deleteEventHandler}
                 >
                     <DeleteOutlined />

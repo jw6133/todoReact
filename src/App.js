@@ -1,12 +1,12 @@
 import React from 'react';
 import Todo from './Todo';
-import AddTodo from './AddTodo';
-import { Paper, List, Container, Grid, Button, AppBar, Toolbar, Typography } from "@material-ui/core";
+import { Container, Grid, AppBar, Toolbar, Typography } from "@material-ui/core";
+import 'nes.css/css/nes.min.css';
 import './App.css';
 import { call, signout } from './service/ApiService';
 import DeleteDoneAll from './DeleteDoneAll';
 import Clear from './Clear';
-import WeatherWidget from './WeatherWidget.js';
+import WeatherWidget from './WeatherWidget';
 
 class App extends React.Component {
   constructor(props) {
@@ -63,24 +63,24 @@ class App extends React.Component {
 
   render() {
     const todoItems = this.state.items.length > 0 && (
-      <Paper style={{ margin: 16 }}>
-        <List>
+      <div className="lists">
+        <ul className="nes-list is-disc">
           {this.state.items.map((item, idx) => (
             <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
           ))}
-        </List>
-      </Paper>
+        </ul>
+      </div>
     );
 
     const navigationBar = (
-      <AppBar position="static">
-        <Toolbar>
+      <AppBar position="static" className="nes-container is-dark" style={{ height: 60 }}>
+        <Toolbar style={{ minHeight: 50 }}>
           <Grid justifyContent="space-between" container>
             <Grid item>
-              <Typography variant="h6">오늘의 할일</Typography>
+              <Typography variant="h6" className="nes-text is-primary">Today quest</Typography>
             </Grid>
             <Grid item>
-              <Button color="inherit" onClick={signout}>logout</Button>
+              <button className="nes-btn is-error" onClick={signout}>로그아웃</button>
             </Grid>
           </Grid>
         </Toolbar>
@@ -92,7 +92,11 @@ class App extends React.Component {
         {navigationBar}
         <Container maxWidth="md">
           <WeatherWidget /> {/* Add the weather widget component here */}
-          <AddTodo add={this.add} />
+          <div className="nes-field">
+
+            <input type="text" id="add_todo" className="nes-input nes-text" placeholder="새 할 일을 입력하세요..." />
+            <button className="nes-btn is-primary" onClick={() => this.add({ title: document.getElementById('add_todo').value, done: false })}>추가</button>
+          </div>
           <div className="TodoList">{todoItems}</div>
         </Container>
         <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />

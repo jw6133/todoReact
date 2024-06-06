@@ -1,6 +1,8 @@
 import React from 'react';
-import {ListItem, ListItemText, InputBase, Checkbox, ListItemSecondaryAction, IconButton} from "@material-ui/core";
+import { ListItem, ListItemText, InputBase, IconButton } from "@material-ui/core";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
+import 'nes.css/css/nes.min.css'; // NES.css 임포트
+import './App.css'; // 스타일 파일 임포트
 
 class Todo extends React.Component {
     constructor(props) {
@@ -13,27 +15,30 @@ class Todo extends React.Component {
     deleteEventHandler = () => {
         this.delete(this.state.item);
     }
+
     offReadOnlyMode = () => {
-        this.setState({readOnly:false}, () =>{
+        this.setState({ readOnly: false }, () => {
             console.log("ReadOnly?", this.state.readOnly)
         });
     }
+
     enterKeyEventHandler = (e) => {
-        if(e.key === "Enter") {
-            this.setState({readOnly:true});
+        if (e.key === "Enter") {
+            this.setState({ readOnly: true });
             this.update(this.state.item);
         }
     }
+
     editEventHandler = (e) => {
         const thisItem = this.state.item;
         thisItem.title = e.target.value;
-        this.setState({item:thisItem});
+        this.setState({ item: thisItem });
     }
-    checkboxEventHandler = (e) => {
+
+    checkboxEventHandler = () => {
         const thisItem = this.state.item;
-        thisItem.done = thisItem.done ? false : true; // thisItemdone = !thisitem.done
-        //this.setState({item:thisItem});
-        this.setState({readOnly:true});
+        thisItem.done = !thisItem.done;
+        this.setState({ readOnly: true });
         this.update(this.state.item);
     }
 
@@ -41,31 +46,32 @@ class Todo extends React.Component {
         const item = this.state.item;
         return (
             <ListItem>
-                <Checkbox 
-                checked={item.done} 
-                onChange={this.checkboxEventHandler}
-                />
+                <label>
+                    <input
+                        type="checkbox"
+                        className="nes-checkbox"
+                        checked={item.done}
+                        onChange={this.checkboxEventHandler}
+                    />
+                    <span>{item.done ? "완료" : "미완료"}</span>
+                </label>
                 <ListItemText>
                     <InputBase
-                    inputProps={{"aria-label":"naked", readOnly:this.state.readOnly}}
-                    type="text"
-                    id={item.id}
-                    name={item.id}
-                    value={item.title}
-                    multiline={true}
-                    fullWidth={true}
-                    onClick={this.offReadOnlyMode}
-                    onChange={this.editEventHandler}
-                    onKeyPress={this.enterKeyEventHandler}                    
+                        inputProps={{ "aria-label": "naked", readOnly: this.state.readOnly }}
+                        type="text"
+                        id={item.id}
+                        name={item.id}
+                        value={item.title}
+                        multiline={true}
+                        fullWidth={true}
+                        onClick={this.offReadOnlyMode}
+                        onChange={this.editEventHandler}
+                        onKeyPress={this.enterKeyEventHandler}
                     />
                 </ListItemText>
-
-                <ListItemSecondaryAction>
-                    <IconButton aria-label="Delete"
-                    onClick={this.deleteEventHandler}>
-                       <DeleteOutlined />
-                    </IconButton>
-                </ListItemSecondaryAction>
+                <IconButton aria-label="Delete" onClick={this.deleteEventHandler}>
+                    <DeleteOutlined />
+                </IconButton>
             </ListItem>
         );
     }

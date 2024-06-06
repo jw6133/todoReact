@@ -9,13 +9,12 @@ class Clear extends React.Component {
     }
 
     deleteEventHandler = () => {
-        console.log("지운다. 모두.");
         this.delete();
     }
 
     render() {
         return (
-            <div>다 사라져
+            <div>모두 지우기
                 <IconButton
                     aria-label="일 안 해!"
                     onClick={this.deleteEventHandler}

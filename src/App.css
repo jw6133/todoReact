@@ -1,3 +1,4 @@
+/* App.css */
 .App {
   text-align: center;
 }
@@ -35,4 +36,34 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* NES.css 텍스트 스타일 */
+.nes-text {
+  font-family: 'Press Start 2P', cursive;
+}
+
+
+
+
+.nes-checkbox {
+  margin-right: 10px;
+}
+
+.nes-input {
+  margin-right: 10px;
+  flex: 1;
+}
+
+.delete-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 새로운 스타일 추가 */
+.nes-field {
+  display: flex;
+  align-items: center;
 }
