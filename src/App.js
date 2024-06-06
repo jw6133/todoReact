@@ -3,6 +3,8 @@ import Todo from './Todo';
 import { Container, Grid, AppBar, Toolbar, Typography } from "@material-ui/core";
 import 'nes.css/css/nes.min.css';
 import './App.css';
+import DatePicker from 'react-datepicker'; // react-datepicker 임포트
+import 'react-datepicker/dist/react-datepicker.css'; // react-datepicker CSS 임포트
 import { call, signout } from './service/ApiService';
 import DeleteDoneAll from './DeleteDoneAll';
 import Clear from './Clear';
@@ -14,10 +16,12 @@ class App extends React.Component {
     this.state = {
       items: [],
       loading: true,
+      date: new Date(), // 날짜 상태 추가
     };
   }
 
   add = (item) => {
+    item.date = this.state.date;
     call("/todo", "POST", item).then((response) =>
       this.setState({ items: response.data })
     );
@@ -61,15 +65,29 @@ class App extends React.Component {
     );
   }
 
+  handleDateChange = (date) => {
+    this.setState({ date });
+  }
+
   render() {
-    const todoItems = this.state.items.length > 0 && (
+    const { items, date } = this.state;
+    
+    // 선택한 날짜의 할일만 필터링
+    const filteredItems = items.filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate.toDateString() === date.toDateString();
+    });
+
+    const todoItems = filteredItems.length > 0 ? (
       <div className="lists">
         <ul className="nes-list is-disc">
-          {this.state.items.map((item, idx) => (
+          {filteredItems.map((item, idx) => (
             <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
           ))}
         </ul>
       </div>
+    ) : (
+      <p className="nes-text">선택한 날짜에 할일이 없습니다.</p>
     );
 
     const navigationBar = (
@@ -91,11 +109,16 @@ class App extends React.Component {
       <div>
         {navigationBar}
         <Container maxWidth="md">
-          <WeatherWidget /> {/* Add the weather widget component here */}
-          <div className="nes-field">
-
-            <input type="text" id="add_todo" className="nes-input nes-text" placeholder="새 할 일을 입력하세요..." />
-            <button className="nes-btn is-primary" onClick={() => this.add({ title: document.getElementById('add_todo').value, done: false })}>추가</button>
+          <WeatherWidget />
+          <div className="nes-field" style={{ display: 'flex', alignItems: 'center' }}>
+            <DatePicker
+              selected={this.state.date}
+              onChange={this.handleDateChange}
+              dateFormat="yyyy/MM/dd"
+              className="nes-input"
+            />
+            <input type="text" id="add_todo" className="nes-input nes-text" placeholder="새 할 일을 입력하세요..." style={{ flex: 1, marginLeft: '10px' }} />
+            <button className="nes-btn is-primary" onClick={() => this.add({ title: document.getElementById('add_todo').value, done: false })} style={{ marginLeft: '10px' }}>추가</button>
           </div>
           <div className="TodoList">{todoItems}</div>
         </Container>
