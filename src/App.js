@@ -1,7 +1,7 @@
 import React from 'react';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Pagination from '@mui/material/Pagination';
 import { call, signout } from './service/ApiService';
@@ -10,6 +10,25 @@ import Clear from './Clear';
 import WeatherWidget from './WeatherWidget';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const newTheme = createTheme({
+  components: {
+    MuiPickersToolbar: {
+      styleOverrides: {
+        root: {
+          color: '#1565c0',
+          borderRadius: '2px',
+          borderWidth: '1px',
+          borderColor: '#2196f3',
+          border: '1px solid',
+          backgroundColor: '#90caf9',
+        }
+      }
+    }
+  }
+});
 
 class App extends React.Component {
     constructor(props) {
@@ -126,12 +145,12 @@ class App extends React.Component {
         const navigationBar = (
             <nav className="navbar is-primary">
                 <div className="navbar-brand">
-                    <a className="navbar-item">
+                    <a className="navbar-item" href="#">
                         <h1 className="title has-text-white">Today quest</h1>
                     </a>
                 </div>
                 <div className="navbar-end">
-                    <a className="navbar-item has-text-white" onClick={signout}>로그아웃</a>
+                    <button className="navbar-item has-text-white" onClick={signout}>로그아웃</button>
                 </div>
             </nav>
         );
@@ -141,56 +160,63 @@ class App extends React.Component {
                 {navigationBar}
                 <div className="container mt-4">
                     <WeatherWidget />
-                    <div className="field is-grouped is-grouped-centered my-4">
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Select Date"
-                                value={this.state.date}
-                                onChange={this.handleDateChange}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                    </div>
-                    <AddTodo add={this.add} />
-                    <div className="TodoList">
-                        {/* 메인 할 일을 항상 표시 */}
-                        <div className="box">
-                            <h2 className="title is-5">Main Tasks</h2>
-                            <ul>
-                                {mainTasks.map((item, idx) => (
-                                    <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="box">
-                            <h2 className="title is-5">Tasks for {date.toDateString()}</h2>
-                            {todoItems}
-                            <Pagination
-                                count={Math.ceil(filteredItems.length / itemsPerPage)}
-                                page={page}
-                                onChange={this.handlePageChange}
-                                color="primary"
-                                className="pagination is-centered"
-                            />
-                        </div>
-                    </div>
-                    <div className="field is-grouped is-grouped-centered my-4">
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Start Date"
-                                value={this.state.startDate}
-                                onChange={this.handleStartDateChange}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                            <DatePicker
-                                label="End Date"
-                                value={this.state.endDate}
-                                onChange={this.handleEndDateChange}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                        <Button variant="contained" color="primary" onClick={this.exportTodos}>Export Todos</Button>
-                    </div>
+                    <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <ThemeProvider theme={newTheme}>
+                                    <StaticDatePicker
+                                        orientation="portrait"
+                                        openTo="day"
+                                        value={this.state.date}
+                                        onChange={this.handleDateChange}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </ThemeProvider>
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <AddTodo add={this.add} />
+                            <div className="TodoList">
+                                {/* 메인 할 일을 항상 표시 */}
+                                <div className="box">
+                                    <h2 className="title is-5">Main Tasks</h2>
+                                    <ul>
+                                        {mainTasks.map((item, idx) => (
+                                            <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="box">
+                                    <h2 className="title is-5">Tasks for {date.toDateString()}</h2>
+                                    {todoItems}
+                                    <Pagination
+                                        count={Math.ceil(filteredItems.length / itemsPerPage)}
+                                        page={page}
+                                        onChange={this.handlePageChange}
+                                        color="primary"
+                                        className="pagination is-centered"
+                                    />
+                                </div>
+                            </div>
+                            <div className="field is-grouped is-grouped-centered my-4">
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        label="Start Date"
+                                        value={this.state.startDate}
+                                        onChange={this.handleStartDateChange}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                    <DatePicker
+                                        label="End Date"
+                                        value={this.state.endDate}
+                                        onChange={this.handleEndDateChange}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
+                                <Button variant="contained" color="primary" onClick={this.exportTodos}>Export Todos</Button>
+                            </div>
+                        </Grid>
+                    </Grid>
                 </div>
                 <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
                 <Clear clearAll={this.clearAll} />
