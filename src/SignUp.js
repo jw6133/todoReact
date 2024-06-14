@@ -1,23 +1,15 @@
 import React from "react";
-import {
-    Button,
-    TextField,
-    Link,
-    Grid,
-    Container,
-    Typography,
-} from "@material-ui/core";
-
 import { signup } from "./service/ApiService";
+import './App.css'; // Importing the styles
 
 class SignUp extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     handleSubmit(event) {
         event.preventDefault();
-
         const data = new FormData(event.target);
         const username = data.get("username");
         const email = data.get("email");
@@ -31,71 +23,59 @@ class SignUp extends React.Component {
 
     render() {
         return (
-            <Container component="main" maxWidth="xs" style={{ marginTop: "8%" }}>
-                <form noValidate onSubmit={this.handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography component="h1" variant="h5">
-                                계정 생성
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="username"
+            <div className="container container-custom">
+                <form noValidate onSubmit={this.handleSubmit} className="box">
+                    <h1 className="title form-title">계정 생성</h1>
+                    <div className="field">
+                        <label className="label">사용자 이름</label>
+                        <div className="control">
+                            <input
+                                className="input text-field-custom"
+                                type="text"
                                 name="username"
-                                variant="outlined"
+                                placeholder="사용자 이름"
                                 required
-                                fullWidth
-                                id="username"
-                                label="사용자 이름"
-                                autoFocus
                             />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="email"
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">이메일 주소</label>
+                        <div className="control">
+                            <input
+                                className="input text-field-custom"
+                                type="email"
                                 name="email"
-                                variant="outlined"
+                                placeholder="이메일 주소"
                                 required
-                                fullWidth
-                                id="email"
-                                label="이메일 주소"
-                                autoFocus
                             />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="current-password"
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">패스워드</label>
+                        <div className="control">
+                            <input
+                                className="input text-field-custom"
+                                type="password"
                                 name="password"
-                                variant="outlined"
+                                placeholder="패스워드"
                                 required
-                                fullWidth
-                                id="password"
-                                label="패스워드"
-                                autoFocus
                             />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary">
-                                    계정 생성
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link href="/login" variant="body2">
-                                이미 계정이 있습니까? 로그인하세요.
-                            </Link>
-                        </Grid>
-                    </Grid>
+                        </div>
+                    </div>
+                    <div className="field">
+                        <button className="button is-primary button-custom" type="submit">
+                            계정 생성
+                        </button>
+                    </div>
+                    <div className="field">
+                        <p className="has-text-centered">
+                            <a href="/login">이미 계정이 있습니까? 로그인하세요.</a>
+                        </p>
+                    </div>
                 </form>
-            </Container>
+            </div>
         );
     }
 }
 
-export default SignUp
+export default SignUp;

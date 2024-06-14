@@ -41,4 +41,25 @@
   text-decoration: line-through;
 }
 
+/* Centering the container and adding some margin to the top */
+.container {
+  margin-top: 8%;
+}
+
+/* Styling the buttons with some padding and margin */
+button {
+  padding: 10px 20px;
+  margin-top: 15px;
+}
+
+/* Adding some margin to the form elements */
+.text-field {
+  margin-top: 15px;
+}
+
+/* Styling the Typography for headings */
+.typography {
+  margin-bottom: 15px;
+  text-align: center;
+}
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { signin } from "./service/ApiService";
-import { Button, TextField, Grid, Link, Container, Typography } from "@material-ui/core";
+import './App.css'; // Importing the styles
 
 class Login extends React.Component {
     constructor(props) {
@@ -14,62 +14,53 @@ class Login extends React.Component {
         const email = data.get("email");
         const password = data.get("password");
 
-        //ApiService의 singin 메소드를 사용해 로그인
-        signin({email:email,password: password});
+        // ApiService의 signin 메소드를 사용해 로그인
+        signin({ email: email, password: password });
     }
+
     render() {
         return (
-            <Container component="main" maxWidth="xs" style={{marginTop: "8%"}}>
-                <Grid container spacing={2}>
-                    <Typography component="h1" variant="h5">
-                        로그인
-                    </Typography>
-                </Grid>
-                <form noValidate onSubmit={this.handleSubmit}>
-                    {" "}
-                    { /* submit 버튼을 클릭하면 handleSubmit이 실행됨}*/ }
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="email"
-                                label="이메일 주소"
+            <div className="container container-custom">
+                <form noValidate onSubmit={this.handleSubmit} className="box">
+                    <h1 className="title form-title">로그인</h1>
+                    <div className="field">
+                        <label className="label">이메일 주소</label>
+                        <div className="control">
+                            <input
+                                className="input text-field-custom"
+                                type="email"
                                 name="email"
-                                autoComplete="email"
-                                />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField 
-                                type="password"
-                                variant="outlined"
+                                placeholder="이메일 주소"
                                 required
-                                fullWidth
-                                id="password"
-                                label="패스워드"
-                                name="password"
-                                autoComplete="password"
                             />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            >
+                        </div>
+                    </div>
+                    <div className="field">
+                        <label className="label">패스워드</label>
+                        <div className="control">
+                            <input
+                                className="input text-field-custom"
+                                type="password"
+                                name="password"
+                                placeholder="패스워드"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="field">
+                        <button className="button is-primary button-custom" type="submit">
                             로그인
-                            </Button>
-                        </Grid>
-                        <Link href="/signup" variant="body2">
-                            <Grid item>계정이 없습니까? 여기서 가입하세요.
-                            </Grid>
-                        </Link>
-                    </Grid>
+                        </button>
+                    </div>
+                    <div className="field">
+                        <p className="has-text-centered">
+                            <a href="/signup">계정이 없습니까? 여기서 가입하세요.</a>
+                        </p>
+                    </div>
                 </form>
-            </Container>
+            </div>
         );
     }
 }
+
 export default Login;
