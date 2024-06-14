@@ -61,8 +61,8 @@ export function signup(userDTO) {
     .catch((error) => {
         console.log("Oops!");
         console.log(error.status);
-        console.log("Oops!")  // 여긴 왜 땀표 없너
-        if(error.status === 403) {    /////// 오류?? -> ==
+        console.log("Oops!")  
+        if(error.status === 403) {  
             window.location.href = "/auth/signup";
         }
         return Promise.reject(error);

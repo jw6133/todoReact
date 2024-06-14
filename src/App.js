@@ -1,10 +1,9 @@
 import React from 'react';
 import Todo from './Todo';
-import { Container, Grid, AppBar, Toolbar, Typography } from "@material-ui/core";
-import 'nes.css/css/nes.min.css';
-import './App.css';
-import DatePicker from 'react-datepicker'; // react-datepicker 임포트
-import 'react-datepicker/dist/react-datepicker.css'; // react-datepicker CSS 임포트
+import AddTodo from './AddTodo';
+import { Container, Grid, AppBar, Toolbar, Typography, Paper, List, IconButton, TextField } from "@material-ui/core";
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { call, signout } from './service/ApiService';
 import DeleteDoneAll from './DeleteDoneAll';
 import Clear from './Clear';
@@ -21,7 +20,6 @@ class App extends React.Component {
   }
 
   add = (item) => {
-    item.date = this.state.date;
     call("/todo", "POST", item).then((response) =>
       this.setState({ items: response.data })
     );
@@ -78,27 +76,30 @@ class App extends React.Component {
       return itemDate.toDateString() === date.toDateString();
     });
 
+    // 메인 할 일 필터링
+    const mainTasks = items.filter(item => item.isMainTask);
+
     const todoItems = filteredItems.length > 0 ? (
       <div className="lists">
-        <ul className="nes-list is-disc">
+        <List>
           {filteredItems.map((item, idx) => (
             <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
           ))}
-        </ul>
+        </List>
       </div>
     ) : (
-      <p className="nes-text">선택한 날짜에 할일이 없습니다.</p>
+      <p>선택한 날짜에 할일이 없습니다.</p>
     );
 
     const navigationBar = (
-      <AppBar position="static" className="nes-container is-dark" style={{ height: 60 }}>
+      <AppBar position="static" style={{ height: 60 }}>
         <Toolbar style={{ minHeight: 50 }}>
           <Grid justifyContent="space-between" container>
             <Grid item>
-              <Typography variant="h6" className="nes-text is-primary">Today quest</Typography>
+              <Typography variant="h6">Today quest</Typography>
             </Grid>
             <Grid item>
-              <button className="nes-btn is-error" onClick={signout}>로그아웃</button>
+              <IconButton color="inherit" onClick={signout}>로그아웃</IconButton>
             </Grid>
           </Grid>
         </Toolbar>
@@ -110,17 +111,26 @@ class App extends React.Component {
         {navigationBar}
         <Container maxWidth="md">
           <WeatherWidget />
-          <div className="nes-field" style={{ display: 'flex', alignItems: 'center' }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              selected={this.state.date}
+              label="Select Date"
+              value={this.state.date}
               onChange={this.handleDateChange}
-              dateFormat="yyyy/MM/dd"
-              className="nes-input"
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
-            <input type="text" id="add_todo" className="nes-input nes-text" placeholder="새 할 일을 입력하세요..." style={{ flex: 1, marginLeft: '10px' }} />
-            <button className="nes-btn is-primary" onClick={() => this.add({ title: document.getElementById('add_todo').value, done: false })} style={{ marginLeft: '10px' }}>추가</button>
+          </LocalizationProvider>
+          <AddTodo add={this.add} />
+          <div className="TodoList">
+            {/* 메인 할 일을 항상 표시 */}
+            <Paper style={{ margin: 16 }}>
+              <List>
+                {mainTasks.map((item, idx) => (
+                  <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
+                ))}
+              </List>
+            </Paper>
+            {todoItems}
           </div>
-          <div className="TodoList">{todoItems}</div>
         </Container>
         <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
         <Clear clearAll={this.clearAll} />
