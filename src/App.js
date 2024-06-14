@@ -1,7 +1,6 @@
 import React from 'react';
 import Todo from './Todo';
 import AddTodo from './AddTodo';
-import { Container, Grid, AppBar, Toolbar, Typography, Paper, List, IconButton, TextField, Button } from "@material-ui/core";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Pagination from '@mui/material/Pagination';
@@ -9,6 +8,8 @@ import { call, signout } from './service/ApiService';
 import DeleteDoneAll from './DeleteDoneAll';
 import Clear from './Clear';
 import WeatherWidget from './WeatherWidget';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 class App extends React.Component {
     constructor(props) {
@@ -112,85 +113,87 @@ class App extends React.Component {
 
         const todoItems = paginatedItems.length > 0 ? (
             <div className="lists">
-                <List>
+                <ul>
                     {paginatedItems.map((item, idx) => (
                         <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
                     ))}
-                </List>
+                </ul>
             </div>
         ) : (
             <p>선택한 날짜에 할일이 없습니다.</p>
         );
 
         const navigationBar = (
-            <AppBar position="static" style={{ height: 60 }}>
-                <Toolbar style={{ minHeight: 50 }}>
-                    <Grid justifyContent="space-between" container>
-                        <Grid item>
-                            <Typography variant="h6">Today quest</Typography>
-                        </Grid>
-                        <Grid item>
-                            <IconButton color="inherit" onClick={signout}>로그아웃</IconButton>
-                        </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
+            <nav className="navbar is-primary">
+                <div className="navbar-brand">
+                    <a className="navbar-item">
+                        <h1 className="title has-text-white">Today quest</h1>
+                    </a>
+                </div>
+                <div className="navbar-end">
+                    <a className="navbar-item has-text-white" onClick={signout}>로그아웃</a>
+                </div>
+            </nav>
         );
 
         const todoListPage = (
             <div>
                 {navigationBar}
-                <Container maxWidth="md">
+                <div className="container mt-4">
                     <WeatherWidget />
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
-                            label="Select Date"
-                            value={this.state.date}
-                            onChange={this.handleDateChange}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
-                        />
-                    </LocalizationProvider>
+                    <div className="field is-grouped is-grouped-centered my-4">
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Select Date"
+                                value={this.state.date}
+                                onChange={this.handleDateChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </div>
                     <AddTodo add={this.add} />
                     <div className="TodoList">
                         {/* 메인 할 일을 항상 표시 */}
-                        <Paper style={{ margin: 16 }}>
-                            <Typography variant="h6" style={{ margin: 16 }}>Main Tasks</Typography>
-                            <List>
+                        <div className="box">
+                            <h2 className="title is-5">Main Tasks</h2>
+                            <ul>
                                 {mainTasks.map((item, idx) => (
                                     <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
                                 ))}
-                            </List>
-                        </Paper>
-                        <Paper style={{ margin: 16 }}>
-                            <Typography variant="h6" style={{ margin: 16 }}>Tasks for {date.toDateString()}</Typography>
+                            </ul>
+                        </div>
+                        <div className="box">
+                            <h2 className="title is-5">Tasks for {date.toDateString()}</h2>
                             {todoItems}
                             <Pagination
                                 count={Math.ceil(filteredItems.length / itemsPerPage)}
                                 page={page}
                                 onChange={this.handlePageChange}
                                 color="primary"
-                                style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}
+                                className="pagination is-centered"
                             />
-                        </Paper>
+                        </div>
                     </div>
-                </Container>
+                    <div className="field is-grouped is-grouped-centered my-4">
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Start Date"
+                                value={this.state.startDate}
+                                onChange={this.handleStartDateChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                            <DatePicker
+                                label="End Date"
+                                value={this.state.endDate}
+                                onChange={this.handleEndDateChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                        <Button variant="contained" color="primary" onClick={this.exportTodos}>Export Todos</Button>
+                    </div>
+                </div>
                 <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
                 <Clear clearAll={this.clearAll} />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                        label="Start Date"
-                        value={this.state.startDate}
-                        onChange={this.handleStartDateChange}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
-                    />
-                    <DatePicker
-                        label="End Date"
-                        value={this.state.endDate}
-                        onChange={this.handleEndDateChange}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
-                    />
-                </LocalizationProvider>
-                <Button onClick={this.exportTodos}>Export Todos</Button>
             </div>
         );
 
