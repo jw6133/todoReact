@@ -45,7 +45,17 @@ class AddTodo extends React.Component {
         return (
             <Paper style={{ margin: 16, padding: 16 }}>
                 <Grid container alignItems="center" spacing={2}>
-                    <Grid item xs={10} md={10}>
+                    <Grid item xs={3} md={3}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Select Date"
+                                value={this.state.item.date}
+                                onChange={this.onDateChange}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={6} md={6}>
                         <TextField
                             placeholder="Add Todo here"
                             fullWidth
@@ -54,7 +64,7 @@ class AddTodo extends React.Component {
                             onKeyPress={this.enterKeyEventHandler}
                         />
                     </Grid>
-                    <Grid item xs={1} md={1}>
+                    <Grid item xs={2} md={2}>
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -66,16 +76,6 @@ class AddTodo extends React.Component {
                             }
                             label="Main"
                         />
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Select Date"
-                                value={this.state.item.date}
-                                onChange={this.onDateChange}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
-                            />
-                        </LocalizationProvider>
                     </Grid>
                     <Grid item xs={1} md={1}>
                         <Button
