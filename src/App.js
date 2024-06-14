@@ -19,6 +19,8 @@ class App extends React.Component {
             date: new Date(),
             page: 1,
             itemsPerPage: 5,
+            startDate: new Date(),
+            endDate: new Date(),
         };
     }
 
@@ -74,15 +76,26 @@ class App extends React.Component {
         this.setState({ page: value });
     }
 
+    handleStartDateChange = (startDate) => {
+        this.setState({ startDate });
+    }
+
+    handleEndDateChange = (endDate) => {
+        this.setState({ endDate });
+    }
+
     exportTodos = () => {
+        const { startDate, endDate } = this.state;
         const filePath = 'todos.txt';
-        call(`/todo/export?filePath=${filePath}`, "POST", null)
+        const start = startDate.toISOString().split('T')[0];
+        const end = endDate.toISOString().split('T')[0];
+        call(`/todo/export?startDate=${start}&endDate=${end}&filePath=${filePath}`, "POST", null)
             .then(() => console.log('Todos exported'))
             .catch(error => console.error('Error exporting todos:', error));
     }
 
     render() {
-        const { items, date, page, itemsPerPage } = this.state;
+        const { items, date, page, itemsPerPage, startDate, endDate } = this.state;
 
         // 메인 할 일 필터링
         const mainTasks = items.filter(item => item.isMainTask);
@@ -163,6 +176,20 @@ class App extends React.Component {
                 </Container>
                 <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
                 <Clear clearAll={this.clearAll} />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                        label="Start Date"
+                        value={this.state.startDate}
+                        onChange={this.handleStartDateChange}
+                        renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                    <DatePicker
+                        label="End Date"
+                        value={this.state.endDate}
+                        onChange={this.handleEndDateChange}
+                        renderInput={(params) => <TextField {...params} fullWidth />}
+                    />
+                </LocalizationProvider>
                 <Button onClick={this.exportTodos}>Export Todos</Button>
             </div>
         );
