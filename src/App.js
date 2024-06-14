@@ -4,6 +4,7 @@ import AddTodo from './AddTodo';
 import { Container, Grid, AppBar, Toolbar, Typography, Paper, List, IconButton, TextField } from "@material-ui/core";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import Pagination from '@mui/material/Pagination';
 import { call, signout } from './service/ApiService';
 import DeleteDoneAll from './DeleteDoneAll';
 import Clear from './Clear';
@@ -16,6 +17,8 @@ class App extends React.Component {
       items: [],
       loading: true,
       date: new Date(), // 날짜 상태 추가
+      page: 1, // 현재 페이지
+      itemsPerPage: 5, // 페이지당 항목 수
     };
   }
 
@@ -67,8 +70,15 @@ class App extends React.Component {
     this.setState({ date });
   }
 
+  handlePageChange = (event, value) => {
+    this.setState({ page: value });
+  }
+
   render() {
-    const { items, date } = this.state;
+    const { items, date, page, itemsPerPage } = this.state;
+
+    // 메인 할 일 필터링
+    const mainTasks = items.filter(item => item.isMainTask);
     
     // 선택한 날짜의 할일만 필터링
     const filteredItems = items.filter(item => {
@@ -76,13 +86,16 @@ class App extends React.Component {
       return itemDate.toDateString() === date.toDateString();
     });
 
-    // 메인 할 일 필터링
-    const mainTasks = items.filter(item => item.isMainTask);
 
-    const todoItems = filteredItems.length > 0 ? (
+
+    // 페이지네이션을 위한 항목 분할
+    const startIndex = (page - 1) * itemsPerPage;
+    const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+    const todoItems = paginatedItems.length > 0 ? (
       <div className="lists">
         <List>
-          {filteredItems.map((item, idx) => (
+          {paginatedItems.map((item, idx) => (
             <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
           ))}
         </List>
@@ -123,13 +136,24 @@ class App extends React.Component {
           <div className="TodoList">
             {/* 메인 할 일을 항상 표시 */}
             <Paper style={{ margin: 16 }}>
+              <Typography variant="h6" style={{ margin: 16 }}>Main Tasks</Typography>
               <List>
                 {mainTasks.map((item, idx) => (
                   <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
                 ))}
               </List>
             </Paper>
-            {todoItems}
+            <Paper style={{ margin: 16 }}>
+              <Typography variant="h6" style={{ margin: 16 }}>Tasks for {date.toDateString()}</Typography>
+              {todoItems}
+              <Pagination
+                count={Math.ceil(filteredItems.length / itemsPerPage)}
+                page={page}
+                onChange={this.handlePageChange}
+                color="primary"
+                style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}
+              />
+            </Paper>
           </div>
         </Container>
         <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
