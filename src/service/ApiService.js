@@ -27,30 +27,24 @@ export function call(api, method, request) {
         })
     )
     .catch((error) => {
-        console.log("Oops!");
         console.log(error.status);
-        console.log("Oops!")  // 여긴 왜 땀표 없너
-        if(error.status === 403) {    /////// 오류?? -> ==
+        if(error.status === 403) {   
             window.location.href = "/login";
         }
         return Promise.reject(error);
     });
 }
 
-// 로그인을 위한 API 서비스 메소드 signin
 export function signin(userDTO) {
     return call("/auth/signin","POST", userDTO)
     .then((response) => {
         if(response.token) {
-            // local 스토리지에 토큰 저장
             localStorage.setItem("ACCESS_TOKEN", response.token);
-            // token이 존재하는 경우 todo 화면으로 리디렉트
             window.location.href="/";
         }
     });
 }
 
-// 회원 가입 요청
 export function signup(userDTO) {
     return call("/auth/signup", "POST", userDTO)
     .then((response) => {
@@ -69,9 +63,8 @@ export function signup(userDTO) {
     });
 }
 
-// 로그아웃
+
 export function signout() {
-    // local 스토리지에 토큰 삭제
     localStorage.setItem("ACCESS_TOKEN", null);
     window.location.href="/"
 }

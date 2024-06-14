@@ -1,13 +1,13 @@
 import React from 'react';
 import { ListItem, ListItemText, InputBase, IconButton } from "@material-ui/core";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
-import 'nes.css/css/nes.min.css'; // NES.css 임포트
-import './App.css'; // 스타일 파일 임포트
+import 'nes.css/css/nes.min.css'; // NES.css import
+import './App.css'; // Style file import
 
 class Todo extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { item: props.item, readOnly: true };  // 매개변수 item 의 변수/값을 item에 대입
+        this.state = { item: props.item, readOnly: true };  // Initialize state with item and readOnly
         this.delete = props.delete;
         this.update = props.update;
     }
@@ -18,7 +18,7 @@ class Todo extends React.Component {
 
     offReadOnlyMode = () => {
         this.setState({ readOnly: false }, () => {
-            console.log("ReadOnly?", this.state.readOnly)
+            console.log("ReadOnly?", this.state.readOnly);
         });
     }
 
@@ -46,14 +46,13 @@ class Todo extends React.Component {
         const item = this.state.item;
         return (
             <ListItem>
-                <label>
+                <label className="checkbox">
                     <input
                         type="checkbox"
-                        className="nes-checkbox"
                         checked={item.done}
                         onChange={this.checkboxEventHandler}
                     />
-                    <span>{item.done ? "완료" : "미완료"}</span>
+
                 </label>
                 <ListItemText>
                     <InputBase
@@ -67,6 +66,7 @@ class Todo extends React.Component {
                         onClick={this.offReadOnlyMode}
                         onChange={this.editEventHandler}
                         onKeyPress={this.enterKeyEventHandler}
+                        className={item.done ? "strikethrough" : ""}
                     />
                 </ListItemText>
                 <IconButton aria-label="Delete" onClick={this.deleteEventHandler}>
