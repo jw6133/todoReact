@@ -12,6 +12,94 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import styled from 'styled-components';
+
+
+const colors = {
+  baseColor: '#ADD285',    // 기준색
+  lightBackground: '#E6F1DA', // 아주 엷은 색(배경용)
+  navBar: '#8AA86A',       // 네비게이션 바 색상
+  buttonColor: '#9BBD77',  // 버튼 색상
+  cardBackground: '#D1E3B5', // 카드 배경색 (기준색을 약간 연하게)
+};
+
+// 네비게이션 바 스타일
+const Navbar = styled.nav`
+  background-color: ${colors.navBar};
+  color: white;
+  padding: 1rem;
+  width: 100%;
+  height:100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  .navbar-brand h1 {
+    color: white;
+  }
+
+  .navbar-item {
+    color: white;
+    &:hover {
+      background-color: ${colors.baseColor};
+    }
+  }
+`;
+
+// 배경 스타일
+const Container = styled.div`
+  background-color: ${colors.lightBackground};
+  padding: 2rem;
+  margin-top: 4rem; /* 네비게이션 바와의 간격 확보 */
+`;
+
+// 카드 스타일
+const Card = styled.div`
+  background-color: ${colors.cardBackground};
+  border-radius: 34px;
+  padding: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+`;
+
+// 버튼 스타일
+const StyledButton = styled(Button)`
+  background-color: ${colors.buttonColor} !important;
+  color: white !important;
+  border-radius: 34px !important; /* 버튼에도 모서리 둥글게 적용 */
+  &:hover {
+    background-color: ${colors.navBar} !important;
+  }
+`;
+
+// 할 일 목록 스타일
+const TodoList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    background-color: ${colors.cardBackground};
+    border-radius: 34px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+`;
+
+// 날씨 위젯 스타일
+const WeatherContainer = styled.div`
+  margin-top: 5.5rem; /* 네비게이션 바와의 간격 */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+const WeatherWidgetWrapper = styled.div`
+  width: 100%;
+  max-width: 1140px; /* container의 최대 넓이와 맞춤 */
+  padding: 0 1rem;
+`;
 
 const newTheme = createTheme({
   components: {
@@ -131,19 +219,19 @@ class App extends React.Component {
         const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
         const todoItems = paginatedItems.length > 0 ? (
-            <div className="lists">
-                <ul>
-                    {paginatedItems.map((item, idx) => (
-                        <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
-                    ))}
-                </ul>
-            </div>
+            <TodoList>
+                {paginatedItems.map((item) => (
+                    <li key={item.id}>
+                        <Todo item={item} delete={this.delete} update={this.update} />
+                    </li>
+                ))}
+            </TodoList>
         ) : (
             <p>선택한 날짜에 할일이 없습니다.</p>
         );
 
         const navigationBar = (
-            <nav className="navbar is-primary">
+            <Navbar>
                 <div className="navbar-brand">
                     <a className="navbar-item" href="#">
                         <h1 className="title has-text-white">Today quest</h1>
@@ -152,14 +240,18 @@ class App extends React.Component {
                 <div className="navbar-end">
                     <button className="navbar-item has-text-white" onClick={signout}>로그아웃</button>
                 </div>
-            </nav>
+            </Navbar>
         );
 
         const todoListPage = (
-            <div>
+            <Container>
                 {navigationBar}
+                <WeatherContainer>
+                    <WeatherWidgetWrapper>
+                        <WeatherWidget />
+                    </WeatherWidgetWrapper>
+                </WeatherContainer>
                 <div className="container mt-4">
-                    <WeatherWidget />
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -177,16 +269,17 @@ class App extends React.Component {
                         <Grid item xs={9}>
                             <AddTodo add={this.add} />
                             <div className="TodoList">
-                                {/* 메인 할 일을 항상 표시 */}
-                                <div className="box">
+                                <Card>
                                     <h2 className="title is-5">Main Tasks</h2>
                                     <ul>
-                                        {mainTasks.map((item, idx) => (
-                                            <Todo item={item} key={item.id} delete={this.delete} update={this.update} />
+                                        {mainTasks.map((item) => (
+                                            <li key={item.id}>
+                                                <Todo item={item} delete={this.delete} update={this.update} />
+                                            </li>
                                         ))}
                                     </ul>
-                                </div>
-                                <div className="box">
+                                </Card>
+                                <Card>
                                     <h2 className="title is-5">Tasks for {date.toDateString()}</h2>
                                     {todoItems}
                                     <Pagination
@@ -196,7 +289,7 @@ class App extends React.Component {
                                         color="primary"
                                         className="pagination is-centered"
                                     />
-                                </div>
+                                </Card>
                             </div>
                             <div className="field is-grouped is-grouped-centered my-4">
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -213,22 +306,21 @@ class App extends React.Component {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                 </LocalizationProvider>
-                                <Button variant="contained" color="primary" onClick={this.exportTodos}>Export Todos</Button>
+                                <StyledButton variant="contained" color="primary" onClick={this.exportTodos}>Export Todos</StyledButton>
                             </div>
                         </Grid>
                     </Grid>
                 </div>
                 <DeleteDoneAll clearAllDonelist={this.clearAllDonelist} />
                 <Clear clearAll={this.clearAll} />
-            </div>
+            </Container>
         );
 
-        const loadingPage = <h1>Loading...</h1>
-        const content = this.state.loading ? loadingPage : todoListPage;
+        const loadingPage = <h1>Loading...</h1>;
 
         return (
             <div className="App">
-                {content}
+                {this.state.loading ? loadingPage : todoListPage}
             </div>
         );
     }
