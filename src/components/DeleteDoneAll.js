@@ -8,16 +8,18 @@ const StyledButton = styled(Button)`
     color: white !important;
     border-radius: 4px !important; // 모서리를 약간 둥글게
     padding: 8px 16px !important;
-    margin-left : 20px;
+    min-width: 180px !important;
+    min-height:65px !important;
     &:hover {
         background-color: #8aa86a !important; // hover 시 버튼의 배경색
     }
 `;
 
-class Clear extends React.Component {
+
+class DeleteDoneAll extends React.Component {
     constructor(props) {
         super(props);
-        this.delete = props.clearAll;
+        this.delete = props.clearAllDonelist;
     }
 
     deleteEventHandler = () => {
@@ -27,14 +29,14 @@ class Clear extends React.Component {
     render() {
         return (
             <StyledButton
-                aria-label="모두 지우기"
+                aria-label="완료한 일 지우기"
                 onClick={this.deleteEventHandler}
                 startIcon={<DeleteOutlined />}
             >
-                모두 지우기
+                완료한 일 지우기
             </StyledButton>
         );
     }
 }
 
-export default Clear;
+export default DeleteDoneAll;

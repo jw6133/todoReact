@@ -6,6 +6,7 @@ import SignUp from "./SignUp";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import StatisticsPage from "./StatisticPage";
 
 function Copyright() {
     return (
@@ -26,6 +27,7 @@ class AppRouter extends React.Component {
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/" element={<App />} />
+                        <Route path="/stat" element={<StatisticsPage/>}/>
                     </Routes>
                 </div>
                 <div>

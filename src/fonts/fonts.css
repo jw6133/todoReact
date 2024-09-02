@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "goormBold";
+    font-weight: normal;
+    src: url("./goorm-sans-bold.otf");
+  }
+@font-face {
+    font-family: "goormMedium";
+    font-weight: normal;
+    src: url("./goorm-sans-medium.otf");
+  }
